@@ -1,0 +1,26 @@
+{
+  "name": "cli-productivity-booster",
+  "version": "1.0.0",
+  "description": "A tool that lets users save and run long terminal commands with short aliases",
+  "main": "src/index.js",
+  "bin": {
+    "boost": "./bin/cli-booster"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cli",
+    "productivity",
+    "shortcut",
+    "alias"
+  ],
+  "author": "Sajid Hussain",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^9.5.0",
+    "conf": "^10.2.0",
+    "inquirer": "^8.2.6"
+  }
+}
