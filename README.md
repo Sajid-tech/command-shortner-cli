@@ -71,6 +71,6 @@ boost remove <alias>
 ---
 
 ## **📜 License**  
-MIT © [Your Name](https://github.com/yourusername)  
+MIT © [Sajid Hussain](https://github.com/sajid-tech)  
 
 ---
