@@ -1,6 +1,6 @@
 {
   "name": "command-shortner",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A tool that lets users save and run long terminal commands with short aliases",
   "main": "src/index.js",
   "bin": {
