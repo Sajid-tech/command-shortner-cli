@@ -1,7 +1,7 @@
 const Conf = require('conf');
 
 const config = new Conf({
-  projectName: 'cli-productivity-booster',
+  projectName: 'command-shortner',
   defaults: {
     commands: {}
   }

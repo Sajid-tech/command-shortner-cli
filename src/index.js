@@ -8,7 +8,7 @@ const commands = require('./commands');
 
 program
   .version('1.0.0')
-  .description('CLI Productivity Booster - Save and run long commands with short aliases');
+  .description('CLI Command Shortner - Save and run long commands with short aliases');
 
 program
   .command('add <alias> <command>')

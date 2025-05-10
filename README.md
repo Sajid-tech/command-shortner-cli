@@ -5,7 +5,7 @@ A tool that lets you save and run long terminal commands with short aliases.
 ## Installation
 
 ```bash
-npm install -g cli-productivity-booster
+npm install -g cli-command-shortner
 ```
 
 ## Usage
