@@ -1,13 +1,14 @@
 {
   "name": "command-shortner",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "A tool that lets users save and run long terminal commands with short aliases",
   "main": "src/index.js",
   "bin": {
     "boost": "./bin/cli-shortner"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "node scripts/post-install.js"
   },
   "keywords": [
     "cli",
@@ -23,7 +24,6 @@
     "save",
     "execute",
     "shortcut"
-  
   ],
   "author": "Sajid Hussain",
   "license": "MIT",
@@ -32,5 +32,16 @@
     "commander": "^9.5.0",
     "conf": "^10.2.0",
     "inquirer": "^8.2.6"
-  }
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sajid-tech/command-shortner.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Sajid-tech/command-shortner/issues"
+  },
+  "homepage": "https://github.com/Sajid-tech/command-shortner#readme"
 }
