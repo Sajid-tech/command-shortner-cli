@@ -1,4 +1,4 @@
-# 🔥 Boost Productivity with **`command-shortner`** ⚡  
+# ⚡ Boost Productivity with **`command-shortner`** 🚀  
 
 **Save and run long terminal commands with short, memorable aliases!**  
 
@@ -6,12 +6,23 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Downloads](https://img.shields.io/npm/dt/command-shortner?color=orange)](https://npm-stat.com/charts.html?package=command-shortner)  
 
-### **🚀 Why Use This?**
-Tired of typing long commands like `docker-compose up --build` or `git push origin main --force`?
-**`command-shortner`** lets you:
-✔ **Save** lengthy commands under short aliases
-✔ **Run** them with just a few keystrokes
-✔ **Manage** your shortcuts easily  
+## 🌟 Why Use This?
+
+Tired of repetitive long commands? **`command-shortner`** supercharges your workflow with:
+
+✔ **Alias management** - Save lengthy commands  
+✔ **Command chaining** - Run multiple commands sequentially  
+✔ **Interactive UI** - Visual command management  
+✔ **Cross-platform** - Works everywhere  
+✔ **Import/Export** - Share your shortcuts  
+
+```bash
+# Instead of typing this...
+docker-compose up --build --force-recreate --remove-orphans
+
+# Just type this!
+boost run dc-up
+```
 
 ---
 
@@ -23,93 +34,124 @@ Install globally to use anywhere in your terminal:
 npm install -g command-shortner
 ```  
 
+After installation, you'll see a beautiful welcome message with usage examples!
+
 ---
 
-## **🛠 Usage**  
+## 🛠 Core Features
 
-### **1️⃣ Add a New Shortcut**
+### 🔖 Basic Commands
 ```bash
+# Add new shortcut
 boost add <alias> "<command>"
-```
-**Example:**
-```bash
-boost add dc-up "docker-compose up --build"
-```  
 
-### **2️⃣ Run a Command by Alias**
-```bash
+# Run command
 boost run <alias>
-```
-**Example:**
-```bash
-boost run dc-up
-```  
 
-### **3️⃣ List All Saved Shortcuts**
-```bash
+# List all shortcuts
 boost list
-```  
 
-### **4️⃣ Remove a Shortcut**
-```bash
+# Remove shortcut
 boost remove <alias>
-```  
+```
+
+### ⛓ Advanced Command Chaining
+```bash
+# Chain existing aliases
+boost chain-alias alias1,alias2,alias3
+
+# Example:
+boost add build "npm run build"
+boost add test "npm test"
+boost chain-alias build,test
+```
+
+### 📁 Import/Export
+```bash
+# Export all commands to JSON
+boost export [filename.json]
+
+# Import commands from JSON
+boost import commands.json
+```
+
+### 🖥 Interactive Mode
+```bash
+boost interactive
+```
+Launches a beautiful terminal UI with:
+- Command browser with search
+- One-click execution
+- Visual feedback
+- Easy management
 
 ---
 
-## **💻 Special Features**
+## 🎨 Special Features
 
-### **Windows PowerShell Users**
-If you're having issues with execution policy in PowerShell, run:
+### 🪄 Silent Mode
 ```bash
-boost fix-windows
+boost run <alias> --silent  # Runs without output
 ```
-This creates a special batch file that makes `boost` work in both PowerShell and CMD.
 
-### **Silent Mode**
-Run commands without showing the execution info:
+### 🛠 Windows Fix
 ```bash
-boost run <alias> --silent
+boost fix-windows  # Solves PowerShell issues
+```
+
+### ⚙️ Configuration
+```bash
+# Set default shell (e.g., zsh, bash, powershell)
+boost config set shellOverride /bin/zsh
 ```
 
 ---
 
-## **🔧 Troubleshooting**
+## 🚦 Troubleshooting
 
-### **Common Issues**
+### PowerShell Issues
+```powershell
+# Run as admin then execute:
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
 
-#### **PowerShell Execution Policy Error**
-If you see an error about scripts being disabled:
-1. Run `boost fix-windows` to create a batch file
-2. Or change your PowerShell execution policy:
-   ```powershell
-   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-   ```
-
-#### **Command Not Found**
-Make sure npm's global bin directory is in your PATH. You can check where it is with:
+### Command Not Found
 ```bash
+# Ensure npm global bin is in your PATH
 npm bin -g
 ```
 
-#### **Stderr Output Issues**
-Some commands normally output to stderr even when successful. If a command runs but shows errors, it might still be working correctly.
+### Permission Issues
+```bash
+# On Linux/Mac
+sudo npm install -g command-shortner --unsafe-perm
+```
 
 ---
 
-## **💡 Examples**  
+## 🧩 Real-World Examples
 
-| Command | What It Does |
+| Command | Description |
 |---------|-------------|
-| `boost add gp "git push origin main"` | Saves `git push origin main` as `gp` |
-| `boost run gp` | Runs `git push origin main` |
-| `boost remove gp` | Deletes the `gp` shortcut |
-| `boost add clean "rm -rf node_modules && npm install"` | Saves a cleanup command as `clean` |
-| `boost add dc-logs "docker-compose logs -f"` | Saves docker logs command |
+| `boost add deploy "git push && npm run build && scp -r ./dist user@server:/app"` | Full deployment shortcut |
+| `boost add logs "docker-compose logs -f --tail=100"` | Docker log tracking |
+| `boost run deploy` | Runs `git push && npm run build && scp -r ./dist user@server:/app` |
+| `boost remove deploy` | Deletes the `deploy` shortcut |
+| `boost add refresh "rm -rf node_modules && npm install"` | Project reset |
+| `boost chain-alias test,build,deploy` | CI/CD pipeline |
 
 ---
 
-## **📜 License**
+## 🤝 Contributing
+
+Found a bug or have a feature request?  
+[Open an issue](https://github.com/Sajid-tech/command-shortner-cli/issues) or submit a PR!
+
+---
+
+## 📜 License
+
 MIT © [Sajid Hussain](https://github.com/Sajid-tech)  
 
----
+
+

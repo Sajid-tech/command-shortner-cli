@@ -1,23 +1,40 @@
-#!/usr/bin/env node
-
 const { program } = require('commander');
 const chalk = require('chalk');
-const inquirer = require('inquirer');
-const config = require('./config');
+const gradient = require('gradient-string');
 const commands = require('./commands');
 const packageJson = require('../package.json');
+const chain = require('./commands/chain');
+const interactive = require('./commands/interactive');
+const { successMsg, errorMsg } = require('./utils/ui');
 
-// Set process title to make it easier to find in process list
-process.title = 'command-shortner';
-
-// Handle errors gracefully
-process.on('uncaughtException', (err) => {
-  console.error(chalk.red(`Error: ${err.message}`));
+let boxen;
+import('boxen').then(({ default: boxenModule }) => {
+  boxen = boxenModule;
+}).catch(err => {
+  console.error('Failed to load boxen:', err);
   process.exit(1);
 });
 
+process.title = 'command-shortner';
+
+process.on('uncaughtException', (err) => {
+  errorMsg(err.message);
+  process.exit(1);
+});
+
+const getWelcomeMessage = () => {
+  if (!boxen) return '';
+  return boxen(
+    gradient.pastel(`
+    ⚡ ${chalk.bold('Command Shortner')} v${packageJson.version}
+    ${chalk.italic('Save and run long commands with short aliases')}
+  `), 
+    { padding: 1, borderStyle: 'round', borderColor: 'cyan' }
+  );
+};
+
 program
-  .version(packageJson.version)
+  .version(getWelcomeMessage() || packageJson.version)
   .description('CLI Command Shortner - Save and run long commands with short aliases');
 
 program
@@ -26,9 +43,9 @@ program
   .action((alias, cmd) => {
     try {
       commands.addCommand(alias, cmd);
-      console.log(chalk.green(`Alias "${alias}" added successfully!`));
+      successMsg(`Alias "${alias}" added successfully!`);
     } catch (error) {
-      console.error(chalk.red(`Failed to add alias: ${error.message}`));
+      errorMsg(error.message);
     }
   });
 
@@ -37,13 +54,10 @@ program
   .description('Remove a command alias')
   .action((alias) => {
     try {
-      if (commands.removeCommand(alias)) {
-        console.log(chalk.green(`Alias "${alias}" removed successfully!`));
-      } else {
-        console.log(chalk.yellow(`Alias "${alias}" not found.`));
-      }
+      commands.removeCommand(alias);
+      successMsg(`Alias "${alias}" removed successfully!`);
     } catch (error) {
-      console.error(chalk.red(`Failed to remove alias: ${error.message}`));
+      errorMsg(error.message);
     }
   });
 
@@ -52,9 +66,14 @@ program
   .description('List all command aliases')
   .action(() => {
     try {
-      commands.listCommands();
+      const cmdList = commands.listCommands();
+      if (cmdList.isEmpty) {
+        console.log(chalk.yellow('No commands saved yet.'));
+        return;
+      }
+      require('./utils/ui').showCommandTable(cmdList);
     } catch (error) {
-      console.error(chalk.red(`Failed to list aliases: ${error.message}`));
+      errorMsg(error.message);
     }
   });
 
@@ -62,29 +81,88 @@ program
   .command('run <alias>')
   .description('Run a command by its alias')
   .option('-s, --silent', 'Run silently without showing command being executed')
-  .action((alias, options) => {
+  .action(async (alias, options) => {
     try {
-      commands.runCommand(alias, options.silent);
+      await commands.runCommand(alias, options.silent);
     } catch (error) {
-      console.error(chalk.red(`Failed to run command: ${error.message}`));
+      errorMsg(error.message);
     }
   });
 
-// Special command for Windows PowerShell users
+program
+  .command('chain <commands>')
+  .description('--deprecated command is obsolete and should be avoided; use chain-alias instead.')
+  .option('-s, --silent', 'Run silently without showing commands being executed')
+  .action(async (commands, options) => {
+    try {
+      await chain.runChain(commands, options.silent);
+    } catch (error) {
+      errorMsg(error.message);
+    }
+  });
+
+program
+  .command('chain-alias <aliases>')
+  .description('Run multiple aliases sequentially (comma-separated)')
+  .option('-s, --silent', 'Run silently without showing commands being executed')
+  .action(async (aliases, options) => {
+    try {
+      await chain.runChainAlias(aliases, options.silent);
+    } catch (error) {
+      errorMsg(error.message);
+    }
+  });
+
+program
+  .command('export [file]')
+  .description('Export all commands to a JSON file (default: ./boost-commands.json)')
+  .action((file) => {
+    try {
+      const exportPath = commands.exportCommands(file);
+      successMsg(`Commands exported successfully to: ${exportPath}`);
+    } catch (error) {
+      errorMsg(error.message);
+    }
+  });
+
+program
+  .command('import <file>')
+  .description('Import commands from a JSON file')
+  .action((file) => {
+    try {
+      const count = commands.importCommands(file);
+      successMsg(`Successfully imported ${count} commands`);
+    } catch (error) {
+      errorMsg(error.message);
+    }
+  });
+
+program
+  .command('interactive')
+  .description('Launch interactive mode')
+  .action(() => {
+    try {
+      interactive.start();
+    } catch (error) {
+      errorMsg(error.message);
+    }
+  });
+
 program
   .command('fix-windows')
   .description('Generate a batch file to make boost work in PowerShell')
   .action(() => {
     try {
-      commands.generateWindowsFix();
+      const batchPath = commands.generateWindowsFix();
+      successMsg(`Windows fix created successfully at: ${batchPath}`);
+      console.log(chalk.blue('\nCopy this file to a directory in your PATH or add its location to your PATH variable.'));
     } catch (error) {
-      console.error(chalk.red(`Failed to generate Windows fix: ${error.message}`));
+      errorMsg(error.message);
     }
   });
 
 program.parse(process.argv);
 
-// If no commands are provided, show help
 if (!process.argv.slice(2).length) {
   program.outputHelp();
 }
