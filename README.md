@@ -1,3 +1,9 @@
+## 📜 License
+
+This project is licensed under the **GNU General Public License v3.0**.  
+See the full [LICENSE](./LICENSE) file for detailed terms and conditions.
+
+
 # ⚡ Boost Productivity with **`command-shortner`** 🚀  
 
 **Save and run long terminal commands with short, memorable aliases!**  
@@ -149,9 +155,7 @@ Found a bug or have a feature request?
 
 ---
 
-## 📜 License
 
-MIT © [Sajid Hussain](https://github.com/Sajid-tech)  
 
 
 
