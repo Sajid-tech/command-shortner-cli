@@ -9,7 +9,7 @@ See the full [LICENSE](./LICENSE) file for detailed terms and conditions.
 **Save and run long terminal commands with short, memorable aliases!**  
 
 [![npm](https://img.shields.io/npm/v/command-shortner?color=blue&label=Latest%20Version)](https://www.npmjs.com/package/command-shortner)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Downloads](https://img.shields.io/npm/dt/command-shortner?color=orange)](https://npm-stat.com/charts.html?package=command-shortner)  
 
 ## 🌟 Why Use This?
