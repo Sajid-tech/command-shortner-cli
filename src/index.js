@@ -6,7 +6,16 @@ const packageJson = require('../package.json');
 const chain = require('./commands/chain');
 const interactive = require('./commands/interactive');
 const { successMsg, errorMsg } = require('./utils/ui');
+const checkForUpdates = require('./version-check');
 
+
+(async () => {
+  try {
+    await checkForUpdates();
+  } catch (err) {
+    // Silently fail
+  }
+})();
 let boxen;
 import('boxen').then(({ default: boxenModule }) => {
   boxen = boxenModule;
@@ -160,6 +169,18 @@ program
       errorMsg(error.message);
     }
   });
+
+  program
+    .command('check-updates')
+    .description('Manually check for available updates')
+    .action(async () => {
+      try {
+        await checkForUpdates(true); 
+        successMsg('Update check completed');
+      } catch (error) {
+        errorMsg('Failed to check for updates: ' + error.message);
+      }
+    });
 
 program.parse(process.argv);
 

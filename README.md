@@ -59,6 +59,7 @@ boost remove <alias>
 ```bash
 # Chain existing aliases
 boost chain-alias alias1,alias2,alias3
+boost chain-alias cl,de
 
 # Example:
 boost add build "npm run build"
