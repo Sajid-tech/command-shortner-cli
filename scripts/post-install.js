@@ -1,7 +1,7 @@
-
-
 const chalk = require('chalk');
 const gradient = require('gradient-string');
+const path = require('path');
+const fs = require('fs');
 
 const LOGO = `
 ╔═╗╔═╗╔╦╗╔╦╗╔═╗╔╗╔╔╦╗  ╔═╗╦ ╦╔═╗╦═╗╔╦╗╔╗╔╔═╗╦═╗
@@ -9,9 +9,46 @@ const LOGO = `
 ╚═╝╚═╝╩ ╩╩ ╩╩ ╩╝╚╝═╩╝  ╚═╝╩ ╩╚═╝╩╚═ ╩ ╝╚╝╚═╝╩╚═
 `;
 
-const showInstallMessage = async () => {
+
+const getPackageInfo = () => {
   try {
-    const { default: boxen } = await import('boxen');
+   
+    const possiblePaths = [
+      path.join(process.cwd(), 'package.json'),
+      path.join(__dirname, '..', 'package.json'),
+      path.join(__dirname, '..', '..', 'package.json')
+    ];
+    
+    for (const pkgPath of possiblePaths) {
+      if (fs.existsSync(pkgPath)) {
+        return require(pkgPath);
+      }
+    }
+    
+  
+    return { version: '1.0.0' };
+  } catch (err) {
+    return { version: '1.0.0' };
+  }
+};
+
+const showInstallMessage = async () => {
+
+  const packageJson = getPackageInfo();
+  
+  try {
+   
+    let boxen;
+    try {
+      const boxenModule = await import('boxen');
+      boxen = boxenModule.default;
+    } catch (err) {
+    
+      boxen = require('boxen');
+    }
+    
+
+    if (!boxen) throw new Error('Boxen not available');
     
     const titleLines = LOGO.split('\n');
     const coloredTitle = titleLines.map(line => {
@@ -35,15 +72,14 @@ const showInstallMessage = async () => {
       '',
       `${chalk.dim('Documentation:')} ${githubLink} ${chalk.dim('•')} ${chalk.dim('Help:')} ${chalk.cyan('boost --help')}`,
       '',
-      chalk.italic.dim('Created by Sajid Hussain')
+      chalk.italic.dim(`Command Shortner v${packageJson.version} | Created by Sajid Hussain`)
     ].join('\n'), {
       padding: 1,
       margin: 1,
       borderStyle: 'round',
       borderColor: 'cyan',
       backgroundColor: '#0A0A1F',
-      float: 'left', 
-      width: '100%',  
+      width: process.stdout.columns > 100 ? 100 : process.stdout.columns - 4,
       dimBorder: false
     });
     
@@ -61,8 +97,7 @@ const showInstallMessage = async () => {
             margin: { top: 0, bottom: 1 },
             borderStyle: 'round',
             borderColor: 'blue',
-            float: 'left',  
-            width: '100%'   
+            width: process.stdout.columns > 100 ? 100 : process.stdout.columns - 4   
           }
         )
       );
@@ -76,26 +111,33 @@ const showInstallMessage = async () => {
           margin: { top: 0, bottom: 0 },
           borderStyle: 'round',
           borderColor: 'magenta',
-          float: 'left',  
-          width: '100%'   
+          width: process.stdout.columns > 100 ? 100 : process.stdout.columns - 4   
         }
       )
     );
   } catch (err) {
-    // Fallback 
+    
     console.log(chalk.bold.magenta('\n✨ COMMAND SHORTNER'));
     console.log(chalk.dim('─────────────────'));
-    console.log(chalk.bold('\n✓ Installation Complete\n'));
+    console.log(chalk.bold(`\n✓ Installation Complete! (v${packageJson.version})\n`));
     console.log(chalk.bold('Commands:'));
     console.log(`  ${chalk.blue('•')} Add:      ${chalk.yellow('boost add <alias> "<command>"')}`);
     console.log(`  ${chalk.blue('•')} Run:      ${chalk.yellow('boost run <alias>')}`);
     console.log(`  ${chalk.blue('•')} List:     ${chalk.yellow('boost list')}`);
     console.log(`  ${chalk.blue('•')} Remove:   ${chalk.yellow('boost remove <alias>')}`);
-    console.log(`  ${chalk.blue('•')} Chain:    ${chalk.yellow('boost chain "cmd1 && cmd2"')}`);
+    console.log(`  ${chalk.blue('•')} Chain:    ${chalk.yellow('boost chain-alias cmd1,cmd2')}`);
     console.log(`  ${chalk.blue('•')} Interactive: ${chalk.yellow('boost interactive')}`);
     console.log(`\n${chalk.dim('Docs:')} ${chalk.cyan('https://github.com/Sajid-tech/command-shortner-cli')}`);
     console.log(`${chalk.italic.dim('\nCreated by Sajid Hussain')}`);
   }
 };
 
-showInstallMessage();
+
+showInstallMessage().catch(err => {
+
+  console.log(chalk.yellow('\n✨ Command Shortner installed successfully!'));
+  console.log(chalk.cyan('\nRun "boost --help" to get started.'));
+});
+
+
+module.exports = showInstallMessage;

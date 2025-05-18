@@ -26,7 +26,7 @@ module.exports = async () => {
       const updateMessage = chalk.yellow.bold(`
       ╔══════════════════════════════════════════════════╗
       ║                                                  ║
-      ║  New version available! ${chalk.green(packageJson.version)} → ${chalk.green.bold(latestVersion)}            ║
+      ║  New version available! ${chalk.green(latestVersion)} → ${chalk.green.bold(packageJson.version)}            ║
       ║  Run ${chalk.cyan('npm install -g command-shortner')} to update   ║
       ║                                                  ║
       ╚══════════════════════════════════════════════════╝

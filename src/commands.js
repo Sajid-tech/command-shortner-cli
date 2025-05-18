@@ -25,11 +25,108 @@ function getShell() {
     return { shell: userShell, shellArgs: ['-c'] };
   }
 }
+function translateCommand(command) {
+  // Only translate if on Windows
+  if (process.platform !== 'win32') {
+    return command;
+  }
+
+  // Command mapping for Windows (UNIX → Windows)
+  const commandMap = {
+    // File operations
+    'ls': 'dir',
+    'ls -l': 'dir',
+    'ls -la': 'dir /a',
+    'pwd': 'cd',
+    'rm -rf': 'rmdir /s /q',
+    'rm': 'del',
+    'cp': 'copy',
+    'mv': 'move',
+    'mkdir -p': 'mkdir',
+    'touch': 'echo. >',
+    
+    // System info
+    'df -h': 'wmic logicaldisk get size,freespace,caption',
+    'free -m': 'wmic OS get FreePhysicalMemory,TotalVisibleMemorySize /Value',
+    'top': 'tasklist',
+    'ps': 'tasklist',
+    'kill': 'taskkill /f /pid',
+    
+    // Network
+    'ifconfig': 'ipconfig',
+    'netstat -tulpn': 'netstat -ano',
+    'ping -c': 'ping -n',
+    
+    // Text processing
+    'grep': 'findstr',
+    'cat': 'type',
+    
+    // Time/date
+    'time': 'echo %TIME%',
+    'date': 'echo %DATE%',
+    
+    // Misc
+    'clear': 'cls',
+    'which': 'where',
+    'man': 'help'
+  };
+
+ 
+  if (commandMap[command]) {
+    return commandMap[command];
+  }
+
+ 
+  const parts = command.split(' ');
+  const cmd = parts[0];
+  
+  
+  if (cmd === 'time' && parts.length === 1) {
+    return 'echo %TIME%';
+  }
+  
+  if (cmd === 'ping' && command.includes('-c')) {
+    return command.replace('-c', '-n');
+  }
+  
+  if (cmd === 'touch') {
+    const file = parts.slice(1).join(' ');
+    return `echo. > ${file}`;
+  }
+
+ 
+  for (const [unixCmd, winCmd] of Object.entries(commandMap)) {
+   
+    const unixCmdParts = unixCmd.split(' ');
+    
+    if (unixCmdParts[0] === cmd) {
+     
+      if (unixCmdParts.length === 1) {
+        return command.replace(cmd, winCmd);
+      } 
+     
+      else if (command.startsWith(unixCmd + ' ')) {
+        return command.replace(unixCmd, winCmd);
+      }
+    }
+  }
+
+  return command;
+}
+
 
 async function executeCommand(command, silent = false) {
   try {
     const { shell, shellArgs } = getShell();
-    const proc = spawn(shell, [...shellArgs, command], {
+    
+    
+    const translatedCommand = translateCommand(command);
+    
+    if (!silent && translatedCommand !== command) {
+      console.log(chalk.blue(`Translated command: ${translatedCommand}`));
+    }
+
+    const proc = spawn(shell, [...shellArgs, translatedCommand], {
       stdio: 'inherit',
       shell: true
     });
@@ -140,5 +237,8 @@ module.exports = {
     } catch (error) {
       throw error;
     }
-  }
+  },
+
+    translateCommand
+
 };

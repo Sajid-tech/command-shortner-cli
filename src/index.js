@@ -97,7 +97,9 @@ program
       errorMsg(error.message);
     }
   });
+/*
 
+// deprecated command -- follow chain-alias
 program
   .command('chain <commands>')
   .description('--deprecated command is obsolete and should be avoided; use chain-alias instead.')
@@ -109,7 +111,7 @@ program
       errorMsg(error.message);
     }
   });
-
+ */
 program
   .command('chain-alias <aliases>')
   .description('Run multiple aliases sequentially (comma-separated)')

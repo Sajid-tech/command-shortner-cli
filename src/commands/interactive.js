@@ -69,6 +69,7 @@ const removeCommand = async (cmdList) => {
 
 
 const chainCommands = async (cmdList) => {
+  
   const { aliases } = await inquirer.prompt({
     type: 'checkbox',
     name: 'aliases',
@@ -85,9 +86,80 @@ const chainCommands = async (cmdList) => {
     return;
   }
 
+  
+  let orderedAliases = [...aliases];
+  
+  if (aliases.length > 1) {
+    const { confirmOrder } = await inquirer.prompt({
+      type: 'confirm',
+      name: 'confirmOrder',
+      message: 'Would you like to reorder the commands?',
+      default: false
+    });
+    
+    if (confirmOrder) {
+      const { newOrder } = await inquirer.prompt({
+        type: 'list',
+        name: 'newOrder',
+        message: 'Select order type:',
+        choices: [
+          { name: 'Keep current order', value: 'keep' },
+          { name: 'Reverse order', value: 'reverse' },
+          { name: 'Manual reordering', value: 'manual' }
+        ]
+      });
+      
+      if (newOrder === 'reverse') {
+        orderedAliases = orderedAliases.reverse();
+      } 
+      else if (newOrder === 'manual') {
+    
+        console.log(chalk.cyan('\nReorder commands by selecting them one by one:'));
+        const reordered = [];
+        const remaining = [...orderedAliases];
+        
+        while (remaining.length > 0) {
+          const { nextCmd } = await inquirer.prompt({
+            type: 'list',
+            name: 'nextCmd',
+            message: `Select command #${reordered.length + 1}:`,
+            choices: remaining.map(a => ({
+              name: `${chalk.cyan(a)}: ${cmdList[a]}`,
+              value: a
+            }))
+          });
+          
+          reordered.push(nextCmd);
+          const index = remaining.indexOf(nextCmd);
+          remaining.splice(index, 1);
+        }
+        
+        orderedAliases = reordered;
+      }
+    }
+  }
+
+
+  console.log(chalk.cyan('\nCommand execution order:'));
+  orderedAliases.forEach((alias, index) => {
+    console.log(`${index + 1}. ${chalk.cyan(alias)}: ${cmdList[alias]}`);
+  });
+
+  const { confirm } = await inquirer.prompt({
+    type: 'confirm',
+    name: 'confirm',
+    message: 'Run these commands in sequence?',
+    default: true
+  });
+
+  if (!confirm) {
+    console.log(chalk.yellow('\nCommand chain cancelled.\n'));
+    return;
+  }
+
   try {
    
-    await chain.runChainAlias(aliases.join(','));
+    await chain.runChainAlias(orderedAliases.join(' '));
     console.log(chalk.green('\nAll commands executed successfully!\n'));
   } catch (error) {
     console.log(chalk.red(`\nError: ${error.message}\n`));
