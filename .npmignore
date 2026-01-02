@@ -1,0 +1,12 @@
+src/
+scripts/
+tests/
+tsconfig.json
+.eslintrc.json
+.prettierrc
+jest.config.js
+.git/
+.gitignore
+task.md
+walkthrough.md
+implementation_plan.md

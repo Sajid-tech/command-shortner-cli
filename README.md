@@ -1,162 +1,95 @@
-## 📜 License
+# ⚡ Command Shortner CLI (Boost)
 
-This project is licensed under the **GNU General Public License v3.0**.  
-See the full [LICENSE](./LICENSE) file for detailed terms and conditions.
+> **Professional Command Alias Manager for Developers**
+> *Save time, reduce errors, and boost productivity by creating shortcuts for your most used shell commands.*
 
+![License](https://img.shields.io/badge/license-GPLv3-blue.svg)
+![TypeScript](https://img.shields.io/badge/language-TypeScript-3178C6.svg)
+![Version](https://img.shields.io/badge/version-2.2.0-green.svg)
 
-# ⚡ Boost Productivity with **`command-shortner`** 🚀  
+## 🌟 Features
 
-**Save and run long terminal commands with short, memorable aliases!**  
+- **Cross-Platform**: Works seamlessly on Windows (PowerShell/CMD), macOS, and Linux.
+- **Smart Translation**: Automatically translates common Linux commands (`ls`, `rm`, `pwd`) to Windows equivalents.
+- **Interactive Mode**: User-friendly TUI for managing aliases without remembering flags.
+- **Chain Aliases**: Execute multiple aliases in sequence with a single command.
+- **Type Safety**: Built with strict TypeScript for reliability.
+- **Zero Config Setup**: Works out of the box with intuitive commands.
 
-[![npm](https://img.shields.io/npm/v/command-shortner?color=blue&label=Latest%20Version)](https://www.npmjs.com/package/command-shortner)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Downloads](https://img.shields.io/npm/dt/command-shortner?color=orange)](https://npm-stat.com/charts.html?package=command-shortner)  
+## 🚀 Installation
 
-## 🌟 Why Use This?
-
-Tired of repetitive long commands? **`command-shortner`** supercharges your workflow with:
-
-✔ **Alias management** - Save lengthy commands  
-✔ **Command chaining** - Run multiple commands sequentially  
-✔ **Interactive UI** - Visual command management  
-✔ **Cross-platform** - Works everywhere  
-✔ **Import/Export** - Share your shortcuts  
-
-```bash
-# Instead of typing this...
-docker-compose up --build --force-recreate --remove-orphans
-
-# Just type this!
-boost run dc-up
-```
-
----
-
-## **📦 Installation**  
-
-Install globally to use anywhere in your terminal:  
+Install globally via npm:
 
 ```bash
 npm install -g command-shortner
-```  
-
-After installation, you'll see a beautiful welcome message with usage examples!
-
----
-
-## 🛠 Core Features
-
-### 🔖 Basic Commands
-```bash
-# Add new shortcut
-boost add <alias> "<command>"
-
-# Run command
-boost run <alias>
-
-# List all shortcuts
-boost list
-
-# Remove shortcut
-boost remove <alias>
 ```
 
-### ⛓ Advanced Command Chaining
-```bash
-# Chain existing aliases
-boost chain-alias alias1,alias2,alias3
-boost chain-alias cl,de
+## 📖 Usage
 
-# Example:
+### Basic Commands
+
+| Action | Command | Description |
+| :--- | :--- | :--- |
+| **Add Alias** | `boost add <alias> "<command>"` | Create a new shortcut. |
+| **Run Alias** | `boost run <alias>` | Execute a saved command. |
+| **List** | `boost list` | View all saved aliases. |
+| **Remove** | `boost remove <alias>` | Delete a shortcut. |
+| **Interactive** | `boost interactive` | Launch the TUI menu. |
+| **Export** | `boost export [file]` | Backup commands to JSON. |
+| **Import** | `boost import <file>` | Restore commands from JSON. |
+
+### ⚡ Power Features
+
+#### Chaining Commands
+Run multiple aliases in sequence, perfect for deployment or setup workflows.
+
+```bash
+# Define atomic commands
 boost add build "npm run build"
-boost add test "npm test"
-boost chain-alias build,test
+boost add deploy "firebase deploy"
+
+# Run them together
+boost chain-alias build,deploy
 ```
 
-### 📁 Import/Export
-```bash
-# Export all commands to JSON
-boost export [filename.json]
+#### Windows Compatibility
+If you are on Windows, `boost` automatically translates many Unix commands.
+For example, if you save `ls -la`, it will execute `dir /a` on Windows automatically.
 
-# Import commands from JSON
-boost import commands.json
-```
-
-### 🖥 Interactive Mode
-```bash
-boost interactive
-```
-Launches a beautiful terminal UI with:
-- Command browser with search
-- One-click execution
-- Visual feedback
-- Easy management
-
----
-
-## 🎨 Special Features
-
-### 🪄 Silent Mode
-```bash
-boost run <alias> --silent  # Runs without output
-```
-
-### 🛠 Windows Fix
-```bash
-boost fix-windows  # Solves PowerShell issues
-```
-
-### ⚙️ Configuration
-```bash
-# Set default shell (e.g., zsh, bash, powershell)
-boost config set shellOverride /bin/zsh
-```
-
----
-
-## 🚦 Troubleshooting
-
-### PowerShell Issues
+**PowerShell Users**: If you encounter execution policy errors, run:
 ```powershell
-# Run as admin then execute:
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+boost fix-windows
 ```
 
-### Command Not Found
+## 🛠️ Development
+
+### Prerequisites
+- Node.js >= 16
+- npm >= 8
+
+### Setup
 ```bash
-# Ensure npm global bin is in your PATH
-npm bin -g
+git clone https://github.com/Sajid-tech/command-shortner-cli.git
+cd command-shortner-cli
+npm install
 ```
 
-### Permission Issues
+### Build & Test
 ```bash
-# On Linux/Mac
-sudo npm install -g command-shortner --unsafe-perm
+# Compile TypeScript
+npm run build
+
+# Run Tests
+npm test
+
+# Lint Code
+npm run lint
 ```
-
----
-
-## 🧩 Real-World Examples
-
-| Command | Description |
-|---------|-------------|
-| `boost add deploy "git push && npm run build && scp -r ./dist user@server:/app"` | Full deployment shortcut |
-| `boost add logs "docker-compose logs -f --tail=100"` | Docker log tracking |
-| `boost run deploy` | Runs `git push && npm run build && scp -r ./dist user@server:/app` |
-| `boost remove deploy` | Deletes the `deploy` shortcut |
-| `boost add refresh "rm -rf node_modules && npm install"` | Project reset |
-| `boost chain-alias test,build,deploy` | CI/CD pipeline |
-
----
 
 ## 🤝 Contributing
 
-Found a bug or have a feature request?  
-[Open an issue](https://github.com/Sajid-tech/command-shortner-cli/issues) or submit a PR!
+Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
 
----
+## 📄 License
 
-
-
-
-
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
